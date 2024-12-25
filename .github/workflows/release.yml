@@ -123,13 +123,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-22.04]
         arch: [amd64]
         include:
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             bundled-fio: '3.37'
-            cmake-defines: '-D CMAKE_BUILD_TYPE=Release'
-            upload-files: 'build/{*.AppImage,*.AppImage.zsync,*.AppImage.sig}'
+            cmake-defines: '-D CMAKE_BUILD_TYPE=Release -D USE_QT6=ON'
+            upload-files: 'build/{*.AppImage,*.AppImage.sig}'
     steps:
     - name: Clone repo
       uses: actions/checkout@v2.2.0
@@ -140,9 +140,7 @@ jobs:
     - name: Install dependent packages
       run: |
         sudo apt-get update
-        sudo apt-get install python3-pip libaio-dev qt5-default qttools5-dev kde-style-breeze breeze-icon-theme
-        wget http://launchpadlibrarian.net/590905036/extra-cmake-modules_5.92.0-0ubuntu1_amd64.deb
-        sudo dpkg -i extra-cmake-modules_5.92.0-0ubuntu1_amd64.deb
+        sudo apt-get install -y python3-pip libaio-dev qt6-base-dev qt6-tools-dev qt6-style-breeze breeze-icon-theme extra-cmake-modules
 
     - name: Import GPG key
       uses: crazy-max/ghaction-import-gpg@v6
@@ -151,18 +149,21 @@ jobs:
         passphrase: ${{ secrets.GPG_PASSPHRASE }}
         fingerprint: ${{ env.GPG_KEY_ID }}
 
-    - name: Install Qt
+    - name: Install Qt via aqtinstall
       run: |
+        sudo pip3 install --upgrade pip
         sudo pip3 install setuptools
         sudo pip3 install aqtinstall
-        sudo aqt install --outputdir /opt/Qt 5.15.1 linux desktop
+        sudo aqt install-qt linux desktop 6.5.2 --outputdir /opt/Qt
 
     - name: Prepare 3rd-party
       run: |
         mkdir 3rd-party
         cd 3rd-party
-        wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
-        chmod +x ./linuxdeployqt-continuous-x86_64.AppImage
+        wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+        chmod +x linuxdeploy-x86_64.AppImage
+        wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+        chmod +x linuxdeploy-plugin-qt-x86_64.AppImage
         wget https://github.com/axboe/fio/archive/refs/tags/fio-${{ matrix.bundled-fio }}.tar.gz
         tar -xzf fio-${{ matrix.bundled-fio }}.tar.gz
         cd ..
@@ -177,19 +178,17 @@ jobs:
         mkdir appdir
         echo -e '#!/bin/bash\nHERE="$(dirname "$(readlink -f "${0}")")"\nexport PATH="$HERE/usr/bin/:$PATH"\n$HERE/usr/bin/kdiskmark "$@"' > appdir/AppRun
         chmod +x ./appdir/AppRun
-        cmake ${{ matrix.cmake-defines }} -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_PREFIX_PATH=/opt/Qt/5.15.1/gcc_64/ ..
+        cmake ${{ matrix.cmake-defines }} -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_PREFIX_PATH=/opt/Qt/6.5.2/gcc_64/ ..
         sed -i "s|XAUTHORITY kdiskmark|XAUTHORITY ./$APPIMAGE_NAME|g" ../src/mainwindow.cpp
         make DESTDIR=appdir -j$(nproc) install
-        cd ../3rd-party/fio-fio-${{ matrix.bundled-fio }}
-        ./configure --disable-native --build-static
-        make DESTDIR="$(pwd)/../../build/appdir" prefix=/usr install
-        cd ../../build
         cp -a /usr/share/icons/breeze appdir/usr/share/icons/
-        sudo mkdir /opt/Qt/5.15.1/gcc_64/plugins/styles/
-        sudo cp /usr/lib/x86_64-linux-gnu/qt5/plugins/styles/breeze.so /opt/Qt/5.15.1/gcc_64/plugins/styles/
-        export VERSION=$APP_VERSION-fio-${{ matrix.bundled-fio }}
-        ../3rd-party/linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage -qmake=/opt/Qt/5.15.1/gcc_64/bin/qmake \
-          -extra-plugins=styles/breeze.so -updateinformation="gh-releases-zsync|${{ github.repository_owner }}|$REPO_NAME|latest|*.zsync"
+        export QT_PLUGIN_PATH="/opt/Qt/6.5.2/gcc_64/plugins"
+        export QML2_IMPORT_PATH="/opt/Qt/6.5.2/gcc_64/qml"
+        export LD_LIBRARY_PATH="/opt/Qt/6.5.2/gcc_64/lib"
+        export QT_MAJOR_VERSION=6
+        ../3rd-party/linuxdeploy-x86_64.AppImage --appdir appdir \
+            --plugin qt \
+            --output appimage
 
     - name: Sign AppImage
       run: |
