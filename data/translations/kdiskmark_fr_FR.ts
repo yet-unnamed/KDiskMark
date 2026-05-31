@@ -425,7 +425,7 @@
     <message>
         <location filename="../../src/global.cpp" line="34"/>
         <source>&lt;h1&gt;%1 MB/s&lt;br/&gt;%2 GB/s&lt;br/&gt;%3 IOPS&lt;br/&gt;%4 μs&lt;/h1&gt;</source>
-        <translation>&lt;h1&gt;%1 Mo/с&lt;br/&gt;%2 Go/с&lt;br/&gt;%3 IOPS&lt;br/&gt;%4 μs&lt;/h1&gt;</translation>
+        <translation>&lt;h1&gt;%1 Mo/s&lt;br/&gt;%2 Go/s&lt;br/&gt;%3 IOPS&lt;br/&gt;%4 μs&lt;/h1&gt;</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="200"/>
