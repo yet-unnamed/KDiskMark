@@ -147,35 +147,31 @@ Benchmark::ParsedJob Benchmark::parseResult(const QString &output, const QString
 
     ParsedJob parsedJob {{0, 0, 0}, {0, 0, 0}};
 
-    int jobsCount = jobs.count();
-
-    if (jobsCount == 0 && !errorOutput.isEmpty()) {
+    if (jobs.isEmpty() && !errorOutput.isEmpty()) {
         setRunning(false);
         emit failed(errorOutput);
     }
-    else if (jobsCount == 0) {
+    else if (jobs.isEmpty()) {
         setRunning(false);
         emit failed("Bad FIO output.");
     }
     else {
-        for (int i = 0; i < jobsCount; i++) {
-            QJsonObject job = jobs.takeAt(i).toObject();
+        QJsonObject job = jobs.first().toObject();
 
-            if (job["error"].toInt() == 0) {
-                QJsonObject jobRead = job["read"].toObject();
-                parsedJob.read.Bandwidth += jobRead.value("bw").toInt() / 1000.0; // to mb
-                parsedJob.read.IOPS += jobRead.value("iops").toDouble();
-                parsedJob.read.Latency += jobRead["clat_ns"].toObject().value("mean").toDouble() / 1000.0 / jobsCount; // to usec
+        if (job["error"].toInt() == 0) {
+            QJsonObject jobRead = job["read"].toObject();
+            parsedJob.read.Bandwidth = jobRead.value("bw").toInt() / 1000.0; // to mb
+            parsedJob.read.IOPS = jobRead.value("iops").toDouble();
+            parsedJob.read.Latency = jobRead["clat_ns"].toObject().value("mean").toDouble() / 1000.0; // to usec
 
-                QJsonObject jobWrite = job["write"].toObject();
-                parsedJob.write.Bandwidth += jobWrite.value("bw").toInt() / 1000.0; // to mb
-                parsedJob.write.IOPS += jobWrite.value("iops").toDouble();
-                parsedJob.write.Latency += jobWrite["clat_ns"].toObject().value("mean").toDouble() / 1000.0 / jobsCount; // to usec
-            }
-            else {
-                setRunning(false);
-                emit failed(errorOutput/*.mid(errorOutput.simplified().lastIndexOf("=") + 1)*/);
-            }
+            QJsonObject jobWrite = job["write"].toObject();
+            parsedJob.write.Bandwidth = jobWrite.value("bw").toInt() / 1000.0; // to mb
+            parsedJob.write.IOPS = jobWrite.value("iops").toDouble();
+            parsedJob.write.Latency = jobWrite["clat_ns"].toObject().value("mean").toDouble() / 1000.0; // to usec
+        }
+        else {
+            setRunning(false);
+            emit failed(errorOutput/*.mid(errorOutput.simplified().lastIndexOf("=") + 1)*/);
         }
     }
 
