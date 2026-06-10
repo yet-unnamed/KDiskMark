@@ -307,6 +307,11 @@
         <translation>Wykrywanie CoW</translation>
     </message>
     <message>
+        <location filename="../../src/mainwindow.ui" line="1313"/>
+        <source>Continuous generation</source>
+        <translation>Generowanie ciągłe</translation>
+    </message>
+    <message>
         <location filename="../../src/mainwindow.cpp" line="54"/>
         <source>The device is encrypted. Performance may drop.</source>
         <translation>Urządzenie jest zaszyfrowane. Wydajność może być niższa.</translation>

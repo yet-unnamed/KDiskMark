@@ -308,6 +308,11 @@ mérés</translation>
         <translation>CoW-észlelés</translation>
     </message>
     <message>
+        <location filename="../../src/mainwindow.ui" line="1313"/>
+        <source>Continuous generation</source>
+        <translation>Folyamatos generálás</translation>
+    </message>
+    <message>
         <location filename="../../src/mainwindow.cpp" line="54"/>
         <source>The device is encrypted. Performance may drop.</source>
         <translation>A kötet titkosított. A mérés némileg pontatlan lehet.</translation>

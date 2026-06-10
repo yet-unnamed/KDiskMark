@@ -307,6 +307,11 @@
         <translation>CoW 偵測</translation>
     </message>
     <message>
+        <location filename="../../src/mainwindow.ui" line="1313"/>
+        <source>Continuous generation</source>
+        <translation>連續生成</translation>
+    </message>
+    <message>
         <location filename="../../src/mainwindow.cpp" line="54"/>
         <source>The device is encrypted. Performance may drop.</source>
         <translation>此裝置因已被加密而可能降低磁碟性能。</translation>
