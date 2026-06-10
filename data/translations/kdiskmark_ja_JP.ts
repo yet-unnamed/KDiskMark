@@ -307,6 +307,11 @@
         <translation>CoW検出</translation>
     </message>
     <message>
+        <location filename="../../src/mainwindow.ui" line="1313"/>
+        <source>Continuous generation</source>
+        <translation>連続生成</translation>
+    </message>
+    <message>
         <location filename="../../src/mainwindow.cpp" line="54"/>
         <source>The device is encrypted. Performance may drop.</source>
         <translation>デバイスが暗号化されています。性能が低下する場合があります。</translation>

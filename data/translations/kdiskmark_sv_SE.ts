@@ -307,6 +307,11 @@
         <translation>CoW-detektering</translation>
     </message>
     <message>
+        <location filename="../../src/mainwindow.ui" line="1313"/>
+        <source>Continuous generation</source>
+        <translation>Kontinuerlig generering</translation>
+    </message>
+    <message>
         <location filename="../../src/mainwindow.cpp" line="54"/>
         <source>The device is encrypted. Performance may drop.</source>
         <translation>Enheten är krypterad. Prestanda kan sjunka.</translation>

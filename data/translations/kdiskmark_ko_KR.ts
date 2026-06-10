@@ -307,6 +307,11 @@
         <translation>CoW 검출</translation>
     </message>
     <message>
+        <location filename="../../src/mainwindow.ui" line="1313"/>
+        <source>Continuous generation</source>
+        <translation>연속 생성</translation>
+    </message>
+    <message>
         <location filename="../../src/mainwindow.cpp" line="54"/>
         <source>The device is encrypted. Performance may drop.</source>
         <translation>기기가 암호화되었습니다. 성능이 저하될 수 있습니다.</translation>
