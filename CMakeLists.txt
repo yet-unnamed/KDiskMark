@@ -102,6 +102,8 @@ add_executable(${PROJECT_NAME}
     src/storageitemdelegate.cpp
     src/benchmark.h
     src/benchmark.cpp
+    src/tui.h
+    src/tui.cpp
     src/about.h
     src/about.cpp
     src/about.ui

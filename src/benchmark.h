@@ -4,7 +4,6 @@
 #include <QProcess>
 #include <QStringList>
 #include <QString>
-#include <QProgressBar>
 #include <QObject>
 #include <QTemporaryFile>
 
@@ -35,7 +34,9 @@ public:
     void setRunning(bool state);
     bool isRunning();
 
-    void runBenchmark(QList<QPair<QPair<Global::BenchmarkTest, Global::BenchmarkIOReadWrite>, QVector<QProgressBar*>>> tests);
+    // Targets are opaque receivers (e.g. QProgressBar in the GUI, result cells in the TUI)
+    // reported back through the resultReady signal.
+    void runBenchmark(QList<QPair<QPair<Global::BenchmarkTest, Global::BenchmarkIOReadWrite>, QVector<QObject*>>> tests);
 
     struct PerformanceResult
     {
@@ -84,7 +85,7 @@ public:
 private:
     bool m_running;
     QString m_FIOVersion;
-    QVector<QProgressBar*> m_progressBars;
+    QVector<QObject*> m_targets;
     QString m_dir;
     QTemporaryFile *m_benchmarkFile = nullptr;
 
@@ -117,7 +118,7 @@ private slots:
 
 signals:
     void benchmarkStatusUpdate(const QString &name);
-    void resultReady(QProgressBar *progressBar, const Benchmark::PerformanceResult &result);
+    void resultReady(QObject *target, const Benchmark::PerformanceResult &result);
     void failed(const QString &error);
     void finished();
     void runningStateChanged(bool state);
