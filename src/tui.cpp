@@ -615,7 +615,11 @@ void Tui::buildSettingsItems()
                     << SettingsItem { SettingsItem::Mode }
                     << SettingsItem { SettingsItem::TestData }
                     << SettingsItem { SettingsItem::Continuous }
+#ifdef APPIMAGE_EDITION
+                    // Flushing the page cache requires the privileged helper,
+                    // which only the AppImage edition provides
                     << SettingsItem { SettingsItem::FlushCache }
+#endif
                     << SettingsItem { SettingsItem::CacheBypass }
                     << SettingsItem { SettingsItem::CowDetection }
                     << SettingsItem { SettingsItem::PresetStandard }
