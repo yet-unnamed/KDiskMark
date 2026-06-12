@@ -9,6 +9,8 @@
 #include <QJsonArray>
 
 #include <QBuffer>
+#include <QDataStream>
+#include <QUuid>
 
 #include "global.h"
 
